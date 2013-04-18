@@ -356,6 +356,14 @@ public class CliGitAPIImpl implements GitClient {
         }
     }
 
+    public void rebase(ObjectId rev) throws GitException {
+        try {
+            launchCommand("rebase", rev.name());
+        } catch (GitException e) {
+            throw new GitException("Could not rebase on " + rev, e);
+        }
+    }
+
     public void submoduleInit() throws GitException {
         launchCommand("submodule", "init");
     }
@@ -1041,5 +1049,4 @@ public class CliGitAPIImpl implements GitClient {
         String result = launchCommand(args);
         return result.length()>=40 ? ObjectId.fromString(result.substring(0, 40)) : null;
     }
-
 }

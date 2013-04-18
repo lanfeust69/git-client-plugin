@@ -7,6 +7,7 @@ import org.eclipse.jgit.api.FetchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.MergeResult;
+import org.eclipse.jgit.api.RebaseResult;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.dircache.DirCache;
@@ -272,6 +273,21 @@ public class JGitAPIImpl implements GitClient {
             throw new GitException(e);
         } catch (GitAPIException e) {
             throw new GitException("Failed to merge " + rev, e);
+        }
+    }
+
+    public void rebase(ObjectId rev) throws GitException {
+        try {
+            Git git = Git.open(workspace);
+            RebaseResult rebaseResult = git.rebase().setUpstream(rev).call();
+            if (!rebaseResult.getStatus().isSuccessful()) {
+                git.reset().setMode(HARD).call();
+                throw new GitException("Failed to rebase on " + rev);
+            }
+        } catch (IOException e) {
+            throw new GitException(e);
+        } catch (GitAPIException e) {
+            throw new GitException("Failed to rebase on " + rev, e);
         }
     }
 

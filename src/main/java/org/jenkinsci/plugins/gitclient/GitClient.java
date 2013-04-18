@@ -93,6 +93,8 @@ public interface GitClient {
 
     void merge(ObjectId rev) throws GitException;
 
+    void rebase(ObjectId rev) throws GitException;
+
     void prune(RemoteConfig repository) throws GitException;
 
     /**
